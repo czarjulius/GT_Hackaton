@@ -13,14 +13,7 @@ class AuthenticationHelper {
    * @method getAuthUser
    */
   static async getAuthUser(id) {
-    const query = `SELECT 
-        id, 
-        firstname, 
-        lastname, 
-        email, isadmin, 
-        registeredOn, 
-        type 
-        FROM users WHERE id = $1`;
+    const query = `SELECT * FROM users WHERE id = $1`;
     const { rows } = await db.query(query, [id]);
     return rows[0];
   }
