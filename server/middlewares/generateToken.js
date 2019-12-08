@@ -14,7 +14,7 @@ const generateToken = (id, email, isadmin, staffid) => {
     staffid,
   },
   process.env.SECRET_KEY, {
-    expiresIn: '24h',
+    expiresIn: '48h',
   });
 
   return token;

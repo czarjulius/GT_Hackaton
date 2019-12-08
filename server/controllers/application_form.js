@@ -19,10 +19,10 @@ class ApplicationFormController {
   static async postApplicationForm(req, res) {
       
     try {
-      const { firstName, lastName, email, phone, age, nysc, grade } = req.body;
+      const { firstName, lastName, email, school, course, age, nysc, grade } = req.body;
       
 
-      const values = [firstName, lastName, email, phone, age, nysc, grade];
+      const values = [firstName, lastName, email, school, course, age, nysc, grade];
       const result = await db.query(createApplicant, values);
 
       return res.status(201).json({
@@ -33,7 +33,8 @@ class ApplicationFormController {
           firstName,
           lastName,
           email,
-          phone,
+          school,
+          course,
           age,
           nysc,
           grade

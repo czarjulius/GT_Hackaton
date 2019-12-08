@@ -4,7 +4,8 @@
 import {
   createIdentity,
   fetchAllId,
-  selectOneId
+  selectOneId,
+  checkIdNumber
 } from "../models/identityQuery";
 import db from "../models/db";
 /**
@@ -21,15 +22,29 @@ class IdentityController {
    */
   static async postIdentity(req, res) {
     try {
-      let { name, idNumber, unit, branch, name_address_nextOfKin } = req.body;
+      let userId = req.authUser.id;
+      
+
+      let { name, idNumber, unit, branch, name_nextOfKin, address_nextOfKin } = req.body;
+
+      const { rows } = await db.query(checkIdNumber, [userId]);
+      
+
+      if (rows[0]) {
+        return res.status(404).json({
+          status: 404,
+          error: 'User already filled the identity form',
+        });
+      }
 
       let { signature, passport } = req.files;
 
+
       passport = req.filename;
-    //   console.log(passport, "hdvgfgfdfgfsxdsd");
 
       passport = req.files.passport[0].filename;
       signature = req.files.signature[0].filename;
+      
 
       const values = [
         passport,
@@ -37,8 +52,11 @@ class IdentityController {
         idNumber,
         unit,
         branch,
-        name_address_nextOfKin,
-        signature
+        name_nextOfKin,
+        address_nextOfKin,
+        signature,
+        userId
+
       ];
       const result = await db.query(createIdentity, values);
 
@@ -52,7 +70,9 @@ class IdentityController {
           idNumber: result.rows[0].idnumber,
           unit: result.rows[0].unit,
           branch: result.rows[0].branch,
-          name_address_nextOfKin: result.rows[0].name_address_nextOfKin,
+          name_nextOfKin: result.rows[0].name_nextofkin,
+          address_nextOfKin: result.rows[0].address_nextOfkin,
+          userId: result.rows[0].userid, 
           signature: result.rows[0].signature
         }
       });
@@ -67,6 +87,7 @@ class IdentityController {
   static async getAllIdentity(req, res) {
     try {
       const result = await db.query(fetchAllId);
+      
       if (result.rowCount < 1) {
         return res.status(404).json({
           status: 400,
@@ -102,7 +123,7 @@ class IdentityController {
       return res.status(200).json({
         message: "ID fetched successfully",
         status: 200,
-        data: identityId.rows
+        data: identityId.rows[0]
       });
     } catch (err) {
       return res.status(500).json({
