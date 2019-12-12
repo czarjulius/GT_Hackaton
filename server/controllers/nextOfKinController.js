@@ -5,7 +5,8 @@ import {
     createNextOfKin,
     fetchAllNextOfKin,
     selectOneNextOfKin,
-    checkIdNumber
+    checkIdNumber,
+    selectOneNextOfKinByUserId
   } from "../models/nextOfKinQuery";
   import db from "../models/db";
   /**
@@ -89,6 +90,35 @@ import {
         const { id } = req.params;
         
         const nextOfKinId = await db.query(selectOneNextOfKin, [id]);
+
+        if (nextOfKinId.rowCount < 1) {
+          return res.status(404).json({
+            status: 400,
+            error: " Next Of Kin is yet to be created"
+          });
+        }
+  
+        return res.status(200).json({
+          message: "Next Of Kin fetched successfully",
+          status: 200,
+          data: nextOfKinId.rows[0]
+        });
+      } catch (err) {
+        return res.status(500).json({
+          status: 500,
+          error: err.message
+        });
+      }
+    }
+
+    static async getSingleNextOfKinByUserId(req, res) {
+      try {
+        const { id } = req.params;
+
+        let userId = req.authUser.id;
+        userId = id
+        
+        const nextOfKinId = await db.query(selectOneNextOfKinByUserId, [userId]);
 
         if (nextOfKinId.rowCount < 1) {
           return res.status(404).json({

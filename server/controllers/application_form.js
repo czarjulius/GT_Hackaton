@@ -1,7 +1,7 @@
 
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable consistent-return */
-import {createApplicant} from '../models/applicationQuery';
+import {createApplicant, checkEmail } from '../models/applicationQuery';
 
 import db from '../models/db';
 /**
@@ -21,6 +21,16 @@ class ApplicationFormController {
     try {
       const { firstName, lastName, email, school, course, age, nysc, grade } = req.body;
       
+      const { rows } = await db.query(checkEmail, [email]);
+      
+
+      if (rows[0]) {
+        return res.status(404).json({
+          status: 404,
+          error: 'Applicant already Submitted application',
+        });
+      }
+
 
       const values = [firstName, lastName, email, school, course, age, nysc, grade];
       const result = await db.query(createApplicant, values);

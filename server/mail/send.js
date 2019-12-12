@@ -5,6 +5,7 @@ class EmailController {
   static async pushEmail(infoBody) {
     const { email, password, instruction } = infoBody;
     console.log(infoBody, "email");
+    let appUrl = '\nfile:\///Users\/julius\/Desktop\/Hackaton\/index.html'
 
     let transporter = nodemailer.createTransport({
       service: "gmail",
@@ -20,7 +21,10 @@ class EmailController {
       to: email,
       subject: "HR",
       html: `
-        <h5> Kindly use the Email and password below to log in </h5>
+      <h5>Kindly use this link : href=${appUrl}</h5>
+        <h5>Navigate to GTDoxx and use the Email and password below </h5>
+       
+       
         <ul>
         <li> User Name: ${email} </li>
         <li> Password:${password} </li>

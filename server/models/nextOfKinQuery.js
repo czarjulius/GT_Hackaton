@@ -10,8 +10,10 @@ const selectOneNextOfKin = `Select I.id, I.name, N.relationship, I.address_nexto
                             N.phone, I.signature from identity as I inner join nextofkin N 
                             on N.userid = I.userid where N.id = $1 limit 1`;
 
+const selectOneNextOfKinByUserId = 'select * from identity where userid = $1 limit 1'
+
 const checkIdNumber = `select * from nextofkin where userid = $1 limit 1`;
 
-export { createNextOfKin, fetchAllNextOfKin, selectOneNextOfKin, checkIdNumber };
+export { createNextOfKin, fetchAllNextOfKin, selectOneNextOfKin, checkIdNumber, selectOneNextOfKinByUserId };
 
 
